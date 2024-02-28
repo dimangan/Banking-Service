@@ -32,8 +32,6 @@ public class JwtService {
             payload.put("password", customUserDetails.getPassword());
             payload.put("name", customUserDetails.getName());
             payload.put("birthday", customUserDetails.getBirthday());
-            payload.put("email", customUserDetails.getEmail());
-            payload.put("phone", customUserDetails.getPhone());
         }
         log.info("Generating token for user {}", userDetails.getUsername());
         return generateToken(payload, userDetails);
@@ -43,7 +41,7 @@ public class JwtService {
         log.info("Generated token for user {}", userDetails.getUsername());
         return Jwts.builder().claims(claims).subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
+                .expiration(null)//new Date(System.currentTimeMillis() + 100000 * 60 * 24))
                 .signWith(getSigningKey(), Jwts.SIG.HS256).compact();
     }
 
@@ -74,15 +72,15 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private boolean isTokenExpired(String token) {
-        log.info("Checking is token expired fo token {}", token);
-        return extractExpiration(token).before(new Date());
-    }
+//    private boolean isTokenExpired(String token) {
+//        log.info("Checking is token expired fo token {}", token);
+//        return extractExpiration(token).before(new Date());
+//    }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userName = extractUsername(token);
         log.info("Checking is token valid for user {}", userName);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (userName.equals(userDetails.getUsername()));// && !isTokenExpired(token);
     }
 
 

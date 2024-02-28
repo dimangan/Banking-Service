@@ -3,7 +3,6 @@ package ru.dimangan.bankingservice.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,11 +10,10 @@ import org.springframework.stereotype.Service;
 import ru.dimangan.bankingservice.domain.dto.JwtAuthenticationResponse;
 import ru.dimangan.bankingservice.domain.dto.SignInRequest;
 import ru.dimangan.bankingservice.domain.dto.SignUpRequest;
-import ru.dimangan.bankingservice.domain.models.BankingAccount;
+import ru.dimangan.bankingservice.domain.models.Banking;
 import ru.dimangan.bankingservice.domain.models.User;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import ru.dimangan.bankingservice.domain.models.UserEmail;
+import ru.dimangan.bankingservice.domain.models.UserPhone;
 
 
 @Service
@@ -33,16 +31,19 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setName(request.getName());
         user.setBirthday(request.getBirthday());
-        user.setEmail(request.getEmail());
-        user.setPhone(request.getPhone());
 
-        BankingAccount account = new BankingAccount();
-        account.setBalance(request.getBalance());
-        user.setBankingAccount(account);
+        UserEmail userEmail = new UserEmail();
+        userEmail.setEmail(request.getEmail());
+
+        UserPhone userPhone = new UserPhone();
+        userPhone.setPhone(request.getPhone());
+
+        Banking banking = new Banking();
+        banking.setBalance(request.getBalance());
 
         log.info("Request: {}\n User: {}", request, user);
 
-        userService.create(user);
+        userService.create(user, userEmail, userPhone, banking);
 
         String jwt = jwtService.generateToken(user);
         log.info("User registered. Token: " + jwt);

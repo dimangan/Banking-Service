@@ -14,7 +14,7 @@ import ru.dimangan.bankingservice.services.AuthenticationService;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/service")
+@RequestMapping("/api/v1/free")
 public class AuthController {
     private final AuthenticationService authenticationService;
 

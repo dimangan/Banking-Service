@@ -6,7 +6,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.dimangan.bankingservice.domain.models.Banking;
 import ru.dimangan.bankingservice.domain.models.User;
+import ru.dimangan.bankingservice.domain.models.UserEmail;
+import ru.dimangan.bankingservice.domain.models.UserPhone;
+import ru.dimangan.bankingservice.repositories.BankingRepository;
+import ru.dimangan.bankingservice.repositories.EmailRepository;
+import ru.dimangan.bankingservice.repositories.PhoneRepository;
 import ru.dimangan.bankingservice.repositories.UserRepository;
 
 @Service
@@ -14,27 +20,44 @@ import ru.dimangan.bankingservice.repositories.UserRepository;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
+    private final EmailRepository emailRepository;
+    private final PhoneRepository phoneRepository;
+    private final BankingRepository bankingRepository;
 
-    public User save(User user) {
-        log.info("Saving user: {}", user);
-        return userRepository.save(user);
-    }
 
-    public User create(User user) {
+
+    public User create(User user, UserEmail userEmail, UserPhone userPhone, Banking banking) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Пользователь с таким именем уже существует");
         }
-        if (userRepository.existsByEmail(user.getEmail())) {
+        else if (emailRepository.existsByEmail(userEmail.getEmail())) {
             throw new RuntimeException("Пользователь с такой почтой уже существует");
         }
-        if (userRepository.existsByPhone(user.getPhone())) {
+        else if (phoneRepository.existsByPhone(userPhone.getPhone())) {
             throw new RuntimeException("Пользователь с таким телефоном уже существует");
         }
-        if(user.getBankingAccount().getBalance() < 0){
+        else if(banking.getBalance() < 0){
             throw new RuntimeException("Баланс не может быть отрицательным");
         }
-        log.info("Creating user: {}", user);
-        return save(user);
+        else{
+            log.info("Creating user: {}", user);
+            return save(user, userEmail, userPhone, banking);
+        }
+    }
+
+    private User save(User user, UserEmail userEmail, UserPhone userPhone, Banking banking) {
+        user = userRepository.save(user);
+        userEmail.setUser(user);
+        userPhone.setUser(user);
+        banking.setUser(user);
+        user.getEmailList().add(userEmail);
+        user.getPhoneList().add(userPhone);
+        user.setBankingAccount(banking);
+        return userRepository.save(user);
+    }
+
+    public User save(User user){
+        return userRepository.save(user);
     }
 
     public User getByUsername(String username) {

@@ -9,7 +9,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.*;
 
 
@@ -34,17 +33,16 @@ public class User implements UserDetails {
     private Date birthday;
 
 
-    @JoinColumn(name = "email")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<UserEmail> emailList = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<UserPhone> phoneList = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Banking bankingAccount;
 
 
-    @JoinColumn(name = "phone")
-    private List<UserPhone> phone;
 
 
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    private BankingAccount bankingAccount;
 
 
     @Override

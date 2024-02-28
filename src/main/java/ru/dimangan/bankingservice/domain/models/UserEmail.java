@@ -18,4 +18,8 @@ public class UserEmail {
     private Long id;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    private User user;
+
 }

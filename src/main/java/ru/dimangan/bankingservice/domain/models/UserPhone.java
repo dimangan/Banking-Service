@@ -18,4 +18,7 @@ public class UserPhone {
     private Long id;
     @Column(name = "phone", nullable = false, unique = true)
     private String phone;
+
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    private User user;
 }

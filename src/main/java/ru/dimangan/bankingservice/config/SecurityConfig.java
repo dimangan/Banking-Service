@@ -33,8 +33,8 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/service/**").permitAll()
-                        .requestMatchers("/authorize/**").authenticated().
+                        .requestMatchers("/api/v1/free/**").permitAll()
+                        .requestMatchers("/api/v1/authorize/**").authenticated().
                         anyRequest().permitAll())
                         .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .authenticationProvider(authenticationProvider())
