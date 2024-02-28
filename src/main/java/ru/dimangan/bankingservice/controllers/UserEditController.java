@@ -4,14 +4,11 @@ package ru.dimangan.bankingservice.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.dimangan.bankingservice.domain.models.User;
 import ru.dimangan.bankingservice.domain.models.UserEmail;
 import ru.dimangan.bankingservice.domain.models.UserPhone;
 import ru.dimangan.bankingservice.services.EmailService;
 import ru.dimangan.bankingservice.services.PhoneService;
-import ru.dimangan.bankingservice.services.UserService;
 
-import java.security.Principal;
 
 
 @RestController
